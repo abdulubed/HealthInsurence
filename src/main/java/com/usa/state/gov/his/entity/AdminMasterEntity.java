@@ -11,6 +11,9 @@ import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.springframework.format.annotation.NumberFormat;
+import org.springframework.format.annotation.NumberFormat.Style;
+
 import lombok.Data;
 
 @Entity
@@ -40,6 +43,7 @@ public class AdminMasterEntity {
 	private Date dateOfBirth;
 	
 	@Column(name = "SSN_NUMBER")
+	@NumberFormat(style = Style.NUMBER)
 	private Long SsnNumber;
 
 	@Column(name = "PHONE_NUMBER")

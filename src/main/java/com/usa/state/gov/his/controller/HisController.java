@@ -56,12 +56,13 @@ public class HisController {
 	 * @return userRegistration jsp page
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/insertUserData")
-	public String insertUserData(RedirectAttributes redirectAttributes,
+	public String insertUserData( Model model,RedirectAttributes redirectAttributes,
 			@ModelAttribute("adminModel") @Valid AdminModel adminModel, BindingResult result) {
 
 
 		if (result.hasErrors()) {
-			return "redirect:/displayForm";
+			initializerValues(model);
+			return appProperties.getUserRegistration();
 		}
 		redirectAttributes.addFlashAttribute(appProperties.getMessage(), appProperties.getEnrollSuccess());
 		initializerValues(redirectAttributes);
@@ -92,11 +93,12 @@ public class HisController {
 
 	}
 
-	@GetMapping(value = "/email")
-	public @ResponseBody String emailValidation(HttpServletRequest req,Model model ) throws Exception {
+	@GetMapping(value = "/email" )
+	public @ResponseBody String emailValidation(HttpServletRequest req ) throws Exception {
 		String email=null;
 		String msg=null;
 		email = req.getParameter(email);
+		System.out.println(email);
 		System.out.println(email);
 		 msg = adminServiceImpl.validateEmail(email);		
 		 System.out.println(msg);

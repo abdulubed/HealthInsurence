@@ -19,30 +19,10 @@
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-<!-- jQuery library -->
 <script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"> </script>
-
-<!-- jQuery Form Validation library -->
-<script
-	src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
-<script type="text/javascript"
-	src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script type="text/javascript"
-	src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script type="text/javascript"
-	src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/jquery.validate.min.js"></script>
-<script
-	src="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"></script>
-<script
-	src="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css"></script>
-<link rel="stylesheet"
-	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<link rel="stylesheet" href="/resources/demos/style.css">
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script
-	src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/jquery.validate.min.js"></script>
-
+	src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
+	
+	
 <!-- Jquery client side validations -->
 <style>
 .userform {
@@ -81,10 +61,11 @@ $(document).ready(function() {
 	$("#email").blur(function() {
 		var enterEmail = $("#email").val();
 		$.ajax({
-			url: "email",
-			data: 	{
+			type: "get",
+			url: "email" ,
+			 data: 	({
 			email : enterEmail
-			},
+			}),
 				
 			success:function(result){
 				if(result=='DuplicateMail'){
