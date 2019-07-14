@@ -1,0 +1,36 @@
+#server port number
+server:
+  port: 8888
+
+#oracle config properties
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    username: system
+    password: manager
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    
+ #hibernate properties
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.OracleDialect
+        show_sql: true
+        format_sql: true
+        
+    
+#view resolver
+  mvc:
+    view:
+      prefix: /views/
+      suffix: .jsp
+
+#messages
+his: 
+  enrollSuccess: Enrollment successfull
+  enrollFailure: Enrollment Failure  
+  userRegistration: userRegistration    
+  message: message
+          
