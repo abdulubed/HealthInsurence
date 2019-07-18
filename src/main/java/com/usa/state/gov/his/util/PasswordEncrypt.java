@@ -13,6 +13,7 @@ public class PasswordEncrypt {
 	private static String secretKey = "shaikabdulubed78";
 	private static String salt = "encryptionValues";
 	
+	//password encryption
 	public String doEncrypt(String stringToEncrypt) throws Exception {
 		IvParameterSpec iv = new IvParameterSpec(salt.getBytes());
 		SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(), "AES");
