@@ -9,12 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.usa.state.gov.his.entity.AdminMasterEntity;
+import com.usa.state.gov.his.entity.PlanMasterEntity;
 import com.usa.state.gov.his.entity.RolesMasterEntity;
-import com.usa.state.gov.his.exception.SsaRestException;
 import com.usa.state.gov.his.model.AdminModel;
+import com.usa.state.gov.his.model.PlanModel;
 import com.usa.state.gov.his.model.RoleModel;
 import com.usa.state.gov.his.repository.AdminMasterRepository;
+import com.usa.state.gov.his.repository.PlanMasterRepository;
 import com.usa.state.gov.his.repository.RolesMasterRepository;
+import com.usa.state.gov.his.util.EmailSending;
+import com.usa.state.gov.his.util.PasswordEncrypt;
 
 @Service
 public class HisServiceImpl extends Exception implements HisService {
@@ -24,15 +28,39 @@ public class HisServiceImpl extends Exception implements HisService {
 
 	@Autowired
 	private RolesMasterRepository rolesMasterRepository;
-
+	
+	@Autowired
+	private PlanMasterRepository planMasterRepository;
+	
+	@Autowired
+	private PasswordEncrypt passwordEncrypt;
+	
+	@Autowired
+	private EmailSending emailSending;
+	
 	@Override
-	public void insertUserData(AdminModel model) {
+	public void insertUserData(AdminModel model) throws Exception {
+		String encryptedPassword = passwordEncrypt.doEncrypt(model.getPassword());
+		model.setPassword(encryptedPassword);
+		//System.out.println(model);
+		
 		AdminMasterEntity entity = new AdminMasterEntity();
 		BeanUtils.copyProperties(model, entity);
+		entity.setStatus("active");
 		AdminMasterEntity res = adminMasterRepository.save(entity);
 		//System.out.println(res.getSsnNumber() + "" + (res.getSsnNumber() > 0));
 		//System.out.println(res.getSsnNumber());
 		BeanUtils.copyProperties(res, model);
+		//System.out.println("from serviceimpl"+res.getDateOfBirth());
+		
+		Long serialNumber = model.getSerialNumber();
+		if(serialNumber > 0) {
+			String decryptPassword = passwordEncrypt.doDecrypt(model.getPassword());
+			model.setPassword(decryptPassword);
+			emailSending.emailSending(model);
+		}
+		
+		
 		//String ssnNumberString = String.valueOf(model.getSsnNumber());
 		//String ssnNumber = ssnNumberString.substring(0, 4)+"-"+ssnNumberString.substring(4,6)+"-"+ssnNumberString.substring(6, 9);
 		//return ssnNumber;
@@ -59,64 +87,72 @@ public class HisServiceImpl extends Exception implements HisService {
 			BeanUtils.copyProperties(adminMasterOne, adminModelOne);
 			adminModelList.add(adminModelOne);
 		}
-		System.out.println(adminMasterEntityList);
+		//System.out.println(adminMasterEntityList);
 		return adminModelList;
 	}
 
 	@Override
 	public String validateEmail(String email) {
 		String emailId = null;
-		Optional<AdminMasterEntity> adminMasterEntity = adminMasterRepository.findById(email);
-		if (adminMasterEntity.isPresent()) {
-			AdminMasterEntity emailValid = adminMasterEntity.get();
-			emailId = emailValid.getEmail();
-			System.out.println(emailId);
+		int count=0;
+		count = adminMasterRepository.findEmail(email);
+		//System.out.println(count);
+		if (count == 0) {
 			return "success";
-		} else {
-			System.out.println(emailId);
-			return "DuplicateMail";
+		}else {
+			return "duplicate";
 		}
 	}
 
-	/*@Override
-	public String getStateNameById(Long ssnNumber) {
-		String state = null;
-		Optional<AdminMasterEntity> ssnMasterEntity = adminMasterRepository.findById(ssnNumber);
-		if (ssnMasterEntity.isPresent()) {
-			AdminMasterEntity ssnValid = ssnMasterEntity.get();
-			state = ssnValid.getState();
-			System.out.println(state);
-		} else {
-			throw new SsaRestException("Citizen SsnNumber not found with SsnNumber" + ssnNumber);
-		}
-		return state;
-	}*/
-
-	/*@Override
-	public List<SsnModel> getImages() {
-		List<SsnMasterEntity> dataList = ssnMasterRepository.findAll();
-		
-		List imagesList = new ArrayList(dataList.size());
-		for(SsnMasterEntity images : dataList) {
-			SsnModel ssnModel = new SsnModel();
-			BeanUtils.copyProperties(images, ssnModel);
-			imagesList.add(images.getPhoto());
-			
-		}
-		return imagesList;
-	}*/
+	@Override
+	public void insertPlanData(PlanModel model) {
+		PlanMasterEntity planMasterEntity = new PlanMasterEntity();
+		BeanUtils.copyProperties(model, planMasterEntity);
+		PlanMasterEntity planEntity = planMasterRepository.save(planMasterEntity);
+		BeanUtils.copyProperties(planEntity, model);
+	}
 	
-	/*public byte[] getImageById(Long ssnNumber) {
-		byte[] image;
-		Optional<AdminMasterEntity> ssnMasterEntity = adminMasterRepository.findById(ssnNumber);
-		
-			if (ssnMasterEntity.isPresent()) {
-				AdminMasterEntity ssnValid = ssnMasterEntity.get();
-				 image= ssnValid.getPhoto();
-					} else {
-				throw new SsaRestException("Photo not found" + ssnNumber);
-			}
-			return image;
-	}*/
 
+
+	@Override
+	public List<PlanModel> getAllPlans() {
+		List<PlanModel> planLists = new ArrayList<PlanModel>();
+		List<PlanMasterEntity> planMasterEntitiyList = planMasterRepository.findAll();
+		for(PlanMasterEntity plan: planMasterEntitiyList) {
+			PlanModel planModel = new PlanModel();
+			BeanUtils.copyProperties(plan, planModel);
+			planLists.add(planModel);
+		}
+		return planLists;
+	}
+
+	@Override
+	public void statusInActive(Long serialNumber) {		
+		adminMasterRepository.statusInActiveQuery(serialNumber);
+		//System.out.println(serialNumber);		
+	}
+	
+	@Override
+	public void statusActive(Long serialNumber) {		
+		adminMasterRepository.statusActiveQuery(serialNumber);
+		//System.out.println(serialNumber);		
+	}
+
+	@Override
+	public AdminModel editAccountDetails(Long serialNumber) throws Exception {
+		AdminMasterEntity allData = null;
+		Optional<AdminMasterEntity> adminMaster = adminMasterRepository.findById(serialNumber);
+		
+		AdminModel adminModel = new AdminModel();
+		if(adminMaster.isPresent()) {
+			allData = adminMaster.get();
+			String decryptPassword = passwordEncrypt.doDecrypt(allData.getPassword());
+			allData.setPassword(decryptPassword);
+			BeanUtils.copyProperties(allData, adminModel);
+			//System.out.println("comming from edit " +adminModel);
+		}
+		return adminModel;
+	}
+
+	
 }

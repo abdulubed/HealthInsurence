@@ -20,7 +20,15 @@ import lombok.Data;
 @Data
 @Table(name = "ADMIN_MASTER")
 public class AdminMasterEntity {
-
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "SERIAL_NUMBER")
+	private Long serialNumber;
+	
+	@Column(name = "STATUS")
+	private String status;
+	
 	
 
 	@Column(name = "FIRST_NAME")
@@ -32,7 +40,6 @@ public class AdminMasterEntity {
 	@Column(name = "GENDER")
 	private String gender;
 
-	@Id
 	@Column(name = "EMAIL")
 	private String email;
 
@@ -47,7 +54,7 @@ public class AdminMasterEntity {
 	private Long SsnNumber;
 
 	@Column(name = "PHONE_NUMBER")
-	private Long phoneNumber;
+	private String phoneNumber;
 
 	@Column(name = "ROLE")
 	private String role;

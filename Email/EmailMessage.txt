@@ -1,0 +1,23 @@
+Hi <font color="green"> ${FNAME} ${LNAME} </font>, <br/> 
+
+<br/>
+
+Welcome to HIS application. Your Account is created by HIS Admin.<br/>
+
+<br/>
+
+Please use below details to access HIS application. <br/>
+<br/>
+Application URL :  ${URL} <br/> 
+Email :  ${EMAIL}  <br/>
+Password : <font color="green"> ${PWD} </font><br/>
+Your Role : <font color="green"> ${ROLE} </font> <br/>
+Status : <font color="green"> ${STATUS} </font> <br/>
+
+<br/>
+If you have any concerns/issues please contact HIS Administrator using <font color="green"> ${PHNO} </font>.
+
+<br/>
+
+Thanks & Regards, <br/>
+HIS Admin Team.

@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>All Accounts</title>
 
 <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 <link rel="stylesheet"
@@ -40,6 +40,7 @@
 
 		<thead>
 			<tr>
+				<th>SerialNumber</th>
 				<th>First Name</th>
 				<th>Last Name</th>
 				<th>Gender</th>
@@ -49,13 +50,13 @@
 				<th>Ssn Number</th>
 				<th>Phone Number</th>
 				<th>Role</th>
-				<th>Edit</th>
-				<th>Delete</th>
+				<th>Status</th>
+				<th>Action</th>
 			</tr>
 		</thead>
 		<c:forEach items="${accountRecords}" var="accountRecords">
 			<tr>
-				<%-- <td><c:out value="${ssnNumberList.ssnNumberList}"></c:out> --%>
+				<td><c:out value="${accountRecords.serialNumber}"></c:out> 
 				<td><c:out value="${accountRecords.firstName}" /></td>
 				<td><c:out value="${accountRecords.lastName}" /></td>
 				<td><c:out value="${accountRecords.gender}" /></td>
@@ -65,14 +66,33 @@
 				<td><c:out value="${accountRecords.ssnNumber}" /></td>
 				<td><c:out value="${accountRecords.phoneNumber}" /></td>
 				<td><c:out value="${accountRecords.role}" /></td>
-				<td><input type="image" id="image" alt="Edit" width="20" height="20" 
-       src="/images/edit.jpg"></td>
-				<td><input type="image" id="image" alt="Delete" width="20" height="20"
-       src="/images/delete.jpg"></td>
+				<td><c:out value="${accountRecords.status}" /></td>
 				
-			</tr>
+				<td><a href="<c:url value='/edit/${accountRecords.serialNumber}'  />" ><input type="image" id="image" alt="Edit" width="20" height="20" 
+       src="/images/edit.jpg"></a>
+				
+				
+				
+				
+				<c:if test="${accountRecords.status == 'active' }">
+				<a href="<c:url value='/statusInActive/${accountRecords.serialNumber}'  />" ><input type="image" id="image" alt="Edit" width="20" height="20" 
+       src="/images/active.jpg"></a>
+				</c:if>
+				
+					<c:if test="${accountRecords.status == 'inActive' }">
+				<a href="<c:url value='/statusActive/${accountRecords.serialNumber}' />" ><input type="image" id="image" alt="Edit" width="20" height="20" 
+       src="/images/inActive.jpg"></a>
+				</c:if>
+				
+ </td>
+			<!-- 	<input type="image" id="image" alt="Edit" width="20" height="20" 
+       src="/images/edit.jpg"> &nbsp;
+      				<!-- <input type="image" id="image" alt="Delete" width="20" height="20"
+       src="/images/delete.jpg"></td> -->
+ 			</tr>
 		</c:forEach>
 	</table>
+	
 
 
 

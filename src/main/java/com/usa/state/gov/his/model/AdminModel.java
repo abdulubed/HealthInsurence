@@ -11,6 +11,10 @@ import lombok.Data;
 
 @Data
 public class AdminModel {
+	
+	private Long serialNumber;
+	
+	private String status;
 
 	@Size(min = 2, max = 20, message = "minimum 2 maximum 20 characters are allowed")
 	@NotEmpty(message = "please enter first name")
@@ -38,7 +42,7 @@ public class AdminModel {
  
 	@Min(value = 10, message = "phno should be 10 Numbers")
 	@NotNull(message = "please enter phno")
-	private Long phoneNumber;
+	private String phoneNumber;
 
 	@NotNull(message = "please select role")
 	private String role;

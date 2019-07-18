@@ -21,8 +21,8 @@
 
 <script
 	src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
-	
-	
+
+
 <!-- Jquery client side validations -->
 <style>
 .userform {
@@ -30,7 +30,7 @@
 }
 
 .userform p {
-	width: 100%;
+	width: 50%;
 }
 
 .userform label {
@@ -56,47 +56,47 @@ label.error {
 }
 </style>
 
-<script type="text/javascript">
-$(document).ready(function() {
-	$("#email").blur(function() {
-		var enterEmail = $("#email").val();
-		$.ajax({
-			type: "get",
-			url: "email" ,
-			 data: 	({
-			email : enterEmail
-			}),
-				
-			success:function(result){
-				if(result=='DuplicateMail'){
-					$("#emailError").html("***Email is already available***");
-					$("#email").focus();
-					//$("#createAccBtn").prop("disabled",true);
-				}
-				else{
-					$("#emailError").html("");
-					$("#createAccBtn").prop("disabled",true);
-				}
-			}
-		});
-	});
+<script>
+$(document).ready(function(){
 	
-});
+	 $("#email").blur(function(){
+	 var enterEmail=$("#email").val();
+	 $.ajax({
+	 url :"email",
+	 data : {
+	 email : enterEmail
+	 },
+	  success : function(result){
+		 
+	  if(result=='duplicate'){
+		 
+	   $("#email").empty;  
+	  $("#emailError").html("**** Email is alrady avilable ****");
+	  $("#email").focus();
+	  }
+	  else{
+	  $("#emailError").html("");
+	  }
+	    }
+	   })
+	   })
+	   });
+
 </script>
 
 
 <!-- Date of birth picker -->
 <script>
-  $(function() {
-        $( "#datepicker" ).datepicker({
-            dateFormat : 'mm/dd/yy',
-            changeMonth : true,
-            changeYear : true,
-            yearRange: '-100y:c+nn',
-            maxDate: '-0d'
-        });
-    });
- </script>
+	$(function() {
+		$("#datepicker").datepicker({
+			dateFormat : 'mm/dd/yy',
+			changeMonth : true,
+			changeYear : true,
+			yearRange : '-100y:c+nn',
+			maxDate : '-0d'
+		});
+	});
+</script>
 
 <script type="text/javascript">
 	(function($, W, D) {
@@ -106,40 +106,40 @@ $(document).ready(function() {
 				//form validation rules
 				$("#myForm").validate({
 					rules : {
-						
+
 						firstName : "required",
-						
+
 						lastName : {
 							required : true,
-							},
-							gender : {
-								required : true,
-								},
-								email : {
-									required : true,
-								},
-								password : {
-									required : true,
-									},
-							
+						},
+						gender : {
+							required : true,
+						},
+						email : {
+							required : true,
+							email : true,
+						},
+						password : {
+							required : true,
+						},
+
 						dateOfBirth : {
 							required : true,
-							},
-							ssnNumber : {
-								required : true,
-								},
-							
-						
-							
+						},
+						ssnNumber : {
+							required : true,
+							number : true,
+						},
+
 						phoneNumber : {
 							required : true,
-							},
-							
+						},
+
 						role : {
 							required : true,
-							}
-						},
-					
+						}
+					},
+
 					messages : {
 						firstName : "Please Enter firstName",
 						lastName : "Please Enter lastName",
@@ -183,17 +183,41 @@ $(document).ready(function() {
 	cursor: pointer;
 }
 </style>
+
+
+<!-- ssn number field splitting -->
+<script>
+function function1() {
+	var len = $("#ssnNumber1").val().length;
+	if(len>=2){
+		$("#ssnNumber2").focus();
+	}
+}
+function function2() {
+	var len = $("#ssnNumber2").val().length;
+	if(len>=1){
+		$("#ssnNumber3").focus();
+	}
+}
+function function3(){
+	var len=$("#ssnNumber3").val().length;
+	var ssnNumber=$("#ssnNumber1").val()+$("#ssnNumber2").val()+$("#ssnNumber3").val();
+	$("#ssnNumber4").val(ssnNumber);
+	if(len>=4){
+	$("#phone").focus();
+	}
+}
+</script>
+
 </head>
 
 
 <body>
 	<div id="page-wrapper">
 		<div class="container">
+			<h2 style="color: #39BC09;">${message}</h2>
 
-			<h1>
-				Account Registration Page
-				<h2 style="color: #39BC09;">${message}${ssnNumber}</h2>
-			</h1>
+
 
 
 			<form:form name="myForm" class="form-horizontal" id="myForm"
@@ -207,16 +231,16 @@ $(document).ready(function() {
 								<div class="col-md-6">
 
 									<div class="form-group">
-										<label for="firstName" class="col-md-4">firstname *</label>
+										<label for="firstName" class="col-md-4">First Name *</label>
 										<div class="col-md-6">
 											<form:input path="firstName" class="form-control"
-												placeholder="Enter firstName" />
+												placeholder="Enter firstName"/>
 											<form:errors path="firstName" class="error" />
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label for="lastName" class="col-md-4">lastname *</label>
+										<label for="lastName" class="col-md-4">Last Name *</label>
 										<div class="col-md-6">
 											<form:input path="lastName" class="form-control"
 												placeholder="Enter lastName" />
@@ -225,7 +249,7 @@ $(document).ready(function() {
 									</div>
 
 									<div class="form-group">
-										<label for="gender" class="col-md-4">gender </label>
+										<label for="gender" class="col-md-4">Gender </label>
 										<div class="col-md-6">
 											<form:radiobuttons items="${gendersList}" path="gender" />
 											<form:errors path="gender" class="error" />
@@ -233,17 +257,17 @@ $(document).ready(function() {
 									</div>
 
 									<div class="form-group">
-										<label for="email" class="col-md-4">email *</label>
+										<label for="email" class="col-md-4">Email *</label>
 										<div class="col-md-6">
 											<form:input path="email" class="form-control"
 												placeholder="Enter email" id="email" />
-											<form:errors path="email" class="error" />
-											<span id="emailError" style="color: red"></span>
+											<form:errors path="email" class="error" /> &nbsp;
+											<div style="color:red" id="emailError"  name="emailError">
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label for="password" class="col-md-4">password *</label>
+										<label for="password" class="col-md-4">Password *</label>
 										<div class="col-md-6">
 											<form:password path="password" class="form-control"
 												placeholder="Enter password" />
@@ -254,8 +278,8 @@ $(document).ready(function() {
 
 
 									<div class="form-group  ">
-										<label for="dateOfBirth" class="col-md-4">dateOfBirth
-										</label>
+										<label for="dateOfBirth" class="col-md-4">Date Of
+											Birth</label>
 										<div class="col-md-6">
 											<form:input path="dateOfBirth" id="datepicker"
 												autocomplete="off" placeholder="Enter  dateOfBirth"
@@ -264,42 +288,34 @@ $(document).ready(function() {
 										</div>
 									</div>
 
-									<div class="form-group">
-										<label for="ssnNumber" class="col-md-4">SsnNumber *</label>
+									 <div class="form-group">
+										<label for="ssnNumber" class="col-md-4">Ssn Number *</label>
 										<div class="col-md-6">
-											<form:input path="ssnNumber" class="form-control"
-												placeholder="Enter SsnNumber" />
+									<input type="text"  id="ssnNumber1"  size="3" maxlength="3" onkeypress="function1()"/> 
+									<input type="text"  id="ssnNumber2"  size="2" maxlength="2" onkeypress="function2()"/> 
+									<input type="text"  id="ssnNumber3" size="4" maxlength="4"  onkeyup="function3()"/>
+											<form:hidden path="ssnNumber" class="form-control" id="ssnNumber4"/>
 											<form:errors path="ssnNumber" class="error" />
 										</div>
-									</div>
+									</div> 
 
 
 
 
 									<div class="form-group">
-										<label for="phoneNumber" class="col-md-4">phoneNumber
+										<label for="phoneNumber" class="col-md-4">Phone Number
 										</label>
 										<div class="col-md-6">
 											<form:input path="phoneNumber"
-												placeholder="Enter phoneNumber" class="form-control" />
+												placeholder="Enter phoneNumber" class="form-control" id="phone"/>
 											<form:errors path="phoneNumber" class="error" />
 										</div>
 									</div>
-									<%-- // <select name="loc.locId" id="locInp">
-
-		  <option value="-1">--select--</option>
-
-		  <c:forEach items="${locListObj}" var="loc">
-
-		  <option value="${loc.locId}"><c:out value="${loc.locName}"/></option>
-
-		  </c:forEach> --%>
 									<div class="form-group">
-										<label for=role class="col-md-4">role </label>
+										<label for=role class="col-md-4">Role </label>
 										<div class="col-md-6">
 											<form:select path="role" items="${rolesList}" />
 											<form:errors path="role" class="error" />
-											<%-- <form:input path="state" placeholder="Enter state" class="form-control"/>  --%>
 										</div>
 									</div>
 
@@ -315,9 +331,7 @@ $(document).ready(function() {
 						<input type="reset" class="btn btn-primary" value="reset" />&nbsp;&nbsp;&nbsp;&nbsp;
 						<input type="submit" class="btn btn-primary" id="createAccBtn"
 							value="Submit" />&nbsp;&nbsp; &nbsp;&nbsp;
-						<button>
-							<a href="getAllAccounts" class="a">view all records</a>&nbsp;&nbsp;
-						</button>
+						
 					</div>
 				</div>
 
@@ -326,7 +340,9 @@ $(document).ready(function() {
 
 
 			</form:form>
-
+					<button>
+							<a href="getAllAccounts" class="a">view all records</a>&nbsp;&nbsp;
+						</button>
 
 		</div>
 	</div>
